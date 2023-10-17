@@ -1,4 +1,6 @@
-# Azure OpenAI Proxy
+# Azure OpenAI Workshop Playgound
+
+## Azure OpenAI Proxy
 
 The Azure OpenAI Proxy is a simple API that allows you to use the OpenAI API without having to expose your API key to the client. It is designed to be deployed to Azure Container Apps, which provides a managed environment for running containerized apps without having to manage the underlying infrastructure. The target use case is for hackathons and other time-bound events where you want to provide access to the OpenAI API without having to worry about exposing your API key.
 
@@ -258,3 +260,6 @@ There are several load testing tools available. The recommended tool is JMeter a
 ### Example load test
 
 ![](./docs/media/example_perf_jmeter.png)
+
+
+## OpenAI Playground Web Playground
