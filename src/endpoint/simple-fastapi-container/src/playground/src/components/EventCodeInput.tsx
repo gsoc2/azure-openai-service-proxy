@@ -28,11 +28,11 @@ export const EventCodeInput = () => {
           textAlign: "justify",
         }}
       >
-        <b>Event Code</b>
+        <b>Access Code</b>
       </Label>
       <Input
         type="password"
-        placeholder="Enter your Event Code"
+        placeholder="Enter your Access Code"
         value={code}
         onChange={(e) => setCode(e.target.value)}
         style={{ textAlign: "right" }}
