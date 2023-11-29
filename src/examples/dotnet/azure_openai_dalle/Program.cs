@@ -5,16 +5,14 @@ using DotNetEnv;
 Env.Load();
 
 // Get the key from the environment variables
-string? key = Environment.GetEnvironmentVariable("YOUR_EVENT_AUTH_TOKEN");
-string? endpoint = Environment.GetEnvironmentVariable("YOUR_AZURE_OPENAI_PROXY_URL");
+string? key = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+string? endpoint = Environment.GetEnvironmentVariable("OPENAI_ENDPOINT_URL");
 
 if (key == null || endpoint == null)
 {
-    Console.WriteLine("Please set the YOUR_EVENT_AUTH_TOKEN and YOUR_AZURE_OPENAI_PROXY_URL environment variables.");
+    Console.WriteLine("Please set the OPENAI_API_KEY and OPENAI_ENDPOINT_URL environment variables.");
     return;
 }
-
-endpoint += "/v1/api";
 
 await GenerateWithDalle2(key, endpoint);
 await GenerateWithDalle3(key, endpoint);

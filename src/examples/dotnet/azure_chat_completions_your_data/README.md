@@ -7,6 +7,6 @@ dotnet add package Azure.AI.OpenAI --prerelease
 dotnet add package DotNetEnv
 ```
 
-## YOUR_EVENT_AUTH_TOKEN
+## OPENAI_API_KEY
 
-YOUR_EVENT_AUTH_TOKEN is the API key and consists of your EVENT_CODE/GITHUB_USERNAME
+OPENAI_API_KEY is the API key and consists of your EVENT_CODE/GITHUB_USERNAME
