@@ -64,12 +64,16 @@ class Embeddings(RequestManager):
                 embeddings.api_version = request.query_params["api-version"]
 
             # exception thrown if not authorized
-            await self.authorize_request(deployment_id=deployment_id, request=request)
+            authorize_response = await self.authorize_request(
+                deployment_id=deployment_id, request=request
+            )
 
             (
                 completion,
                 status_code,
-            ) = await self.request_class_mgr.call_openai_embeddings(embeddings)
+            ) = await self.request_class_mgr.call_openai_embeddings(
+                embeddings, authorize_response
+            )
             response.status_code = status_code
             return completion
 
