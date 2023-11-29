@@ -3,11 +3,11 @@
 from fastapi import Request, Response, FastAPI
 
 # pylint: disable=E0402
-from .request_manager import RequestManager
-from ..images import ImagesRequest, Images as RequestMgr
 from ..authorize import Authorize
-from ..deployment_class import DeploymentClass
 from ..config import Config
+from ..deployment_class import DeploymentClass
+from ..images import ImagesRequest, Images as RequestMgr
+from .request_manager import RequestManager
 
 
 class Images(RequestManager):

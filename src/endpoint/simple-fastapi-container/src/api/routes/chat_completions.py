@@ -7,14 +7,11 @@ import openai.openai_object
 
 
 # pylint: disable=E0402
-from .request_manager import RequestManager
-from ..chat_completions import (
-    ChatCompletionsRequest,
-    ChatCompletions as RequestMgr,
-)
 from ..authorize import Authorize
+from ..chat_completions import ChatCompletionsRequest, ChatCompletions as RequestMgr
 from ..config import Config
 from ..deployment_class import DeploymentClass
+from .request_manager import RequestManager
 
 
 class ChatCompletions(RequestManager):

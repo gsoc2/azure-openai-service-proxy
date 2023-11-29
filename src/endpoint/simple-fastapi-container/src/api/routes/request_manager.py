@@ -4,9 +4,9 @@ from fastapi import APIRouter, FastAPI, Request, HTTPException
 
 # pylint: disable=E0402
 from ..authorize import Authorize, AuthorizeResponse
-from ..rate_limit import RateLimit
-from ..deployment_class import DeploymentClass
 from ..config import Config
+from ..deployment_class import DeploymentClass
+from ..rate_limit import RateLimit
 
 
 class RequestManager:

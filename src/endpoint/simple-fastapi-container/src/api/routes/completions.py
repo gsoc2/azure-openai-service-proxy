@@ -4,11 +4,11 @@ from fastapi import Request, Response, FastAPI
 import openai.openai_object
 
 # pylint: disable=E0402
-from .request_manager import RequestManager
-from ..completions import CompletionsRequest, Completions as RequestMgr
 from ..authorize import Authorize
-from ..deployment_class import DeploymentClass
+from ..completions import CompletionsRequest, Completions as RequestMgr
 from ..config import Config
+from ..deployment_class import DeploymentClass
+from .request_manager import RequestManager
 
 
 class Completions(RequestManager):
