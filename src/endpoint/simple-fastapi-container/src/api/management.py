@@ -7,6 +7,8 @@ from fastapi import HTTPException
 from azure.core.exceptions import AzureError
 from azure.data.tables import TableClient
 from azure.data.tables.aio import TableClient as AsyncTableClient
+
+# pylint: disable=E0402
 from .deployment_class import DeploymentClass
 
 

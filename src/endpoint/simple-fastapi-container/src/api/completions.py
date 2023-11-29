@@ -7,11 +7,11 @@ from pydantic import BaseModel
 import openai
 import openai.error
 import openai.openai_object
-from fastapi import HTTPException
-from .openai_async import OpenAIAsyncManager
-from .config import Config
-from .management import DeploymentClass
+
+# pylint: disable=E0402
 from .authorize import AuthorizeResponse
+from .openai_async import OpenAIAsyncManager
+from .request_base import ModelRequest
 
 OPENAI_COMPLETIONS_API_VERSION = "2023-09-01-preview"
 
@@ -31,64 +31,46 @@ class CompletionsRequest(BaseModel):
     api_version: str = OPENAI_COMPLETIONS_API_VERSION
 
 
-class Completions:
+class Completions(ModelRequest):
     """OpenAI Completions Manager"""
-
-    def __init__(self, config: Config, deployment_class: DeploymentClass):
-        """init in memory session manager"""
-        self.config = config
-        self.deployment_class = deployment_class
-        self.logger = logging.getLogger(__name__)
-
-    def __report_exception(
-        self, message: str, http_status_code: int
-    ) -> Tuple[openai.openai_object.OpenAIObject, int]:
-        """report exception"""
-
-        self.logger.warning(msg=f"{message}")
-
-        raise HTTPException(
-            status_code=http_status_code,
-            detail=message,
-        )
 
     def __validate_input(self, cr: CompletionsRequest):
         """validate input"""
         # do some basic input validation
         if not cr.prompt:
-            return self.__report_exception("Oops, no prompt.", 400)
+            return self.report_exception("Oops, no prompt.", 400)
 
         # check the max_tokens is between 1 and 4000
         if cr.max_tokens and not 1 <= cr.max_tokens <= 4000:
-            return self.__report_exception(
+            return self.report_exception(
                 "Oops, max_tokens must be between 1 and 4000.", 400
             )
 
         # check the temperature is between 0 and 1
         if cr.temperature and not 0 <= cr.temperature <= 1:
-            return self.__report_exception(
+            return self.report_exception(
                 "Oops, temperature must be between 0 and 1.", 400
             )
 
         # check the top_p is between 0 and 1
         if cr.top_p and not 0 <= cr.top_p <= 1:
-            return self.__report_exception("Oops, top_p must be between 0 and 1.", 400)
+            return self.report_exception("Oops, top_p must be between 0 and 1.", 400)
 
         # check the frequency_penalty is between 0 and 1
         if cr.frequency_penalty and not 0 <= cr.frequency_penalty <= 1:
-            return self.__report_exception(
+            return self.report_exception(
                 "Oops, frequency_penalty must be between 0 and 1.", 400
             )
 
         # check the presence_penalty is between 0 and 1
         if cr.presence_penalty and not 0 <= cr.presence_penalty <= 1:
-            return self.__report_exception(
+            return self.report_exception(
                 "Oops, presence_penalty must be between 0 and 1.", 400
             )
 
         # check stop sequence are printable characters
         if cr.stop and not cr.stop.isprintable():
-            return self.__report_exception(
+            return self.report_exception(
                 "Oops, stop_sequence must be printable characters.", 400
             )
 

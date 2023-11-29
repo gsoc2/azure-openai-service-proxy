@@ -10,6 +10,8 @@ import httpx
 import openai
 import openai.error
 import openai.openai_object
+
+# pylint: disable=E0402
 from .config import Deployment
 
 

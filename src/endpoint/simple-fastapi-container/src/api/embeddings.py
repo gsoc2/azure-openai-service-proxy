@@ -7,10 +7,10 @@ import openai.error
 import openai.openai_object
 from pydantic import BaseModel
 
-from .openai_async import OpenAIAsyncManager
-from .config import Config
-from .management import DeploymentClass
+# pylint: disable=E0402
 from .authorize import AuthorizeResponse
+from .openai_async import OpenAIAsyncManager
+from .request_base import ModelRequest
 
 OPENAI_EMBEDDINGS_API_VERSION = "2023-08-01-preview"
 
@@ -25,15 +25,8 @@ class EmbeddingsRequest(BaseModel):
     api_version: str = OPENAI_EMBEDDINGS_API_VERSION
 
 
-class Embeddings:
+class Embeddings(ModelRequest):
     """OpenAI Embeddings Manager"""
-
-    def __init__(self, config: Config, deployment_class: DeploymentClass):
-        """init in memory session manager"""
-
-        self.config = config
-        self.deployment_class = deployment_class
-        self.logger = logging.getLogger(__name__)
 
     async def call_openai_embeddings(
         self,

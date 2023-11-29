@@ -10,14 +10,10 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
-
+# pylint: disable=E0402
 from .authorize import Authorize
 from .config import Config
-
-
-from .management import (
-    ManagementService,
-)
+from .management import ManagementService
 
 
 from .routes.management import Management as management_router

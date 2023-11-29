@@ -9,12 +9,11 @@ import pytz
 from fastapi import HTTPException
 
 from azure.data.tables.aio import TableClient
-from azure.core.exceptions import (
-    AzureError,
-)
+from azure.core.exceptions import AzureError
 
-from .monitor import Monitor, MonitorEntity
+# pylint: disable=E0402
 from .lru_cache_with_expiry import lru_cache_with_expiry
+from .monitor import Monitor, MonitorEntity
 
 USER_TABLE_NAME = "user"
 EVENT_TABLE_NAME = "event"

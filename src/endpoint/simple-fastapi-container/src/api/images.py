@@ -5,12 +5,11 @@ import logging
 from typing import Tuple
 import openai
 from pydantic import BaseModel
-from fastapi import HTTPException
 
-from .openai_async import OpenAIAsyncManager
-from .config import Config
-from .management import DeploymentClass
+# pylint: disable=E0402
 from .authorize import AuthorizeResponse
+from .openai_async import OpenAIAsyncManager
+from .request_base import ModelRequest
 
 OPENAI_IMAGES_GENERATIONS_API_VERSION = "2023-12-01-preview"
 
@@ -58,26 +57,8 @@ class ImagesRequest(BaseModel):
     api_version: str = OPENAI_IMAGES_GENERATIONS_API_VERSION
 
 
-class Images:
+class Images(ModelRequest):
     """OpenAI Images Generations Manager"""
-
-    def __init__(self, config: Config, deployment_class: DeploymentClass):
-        """init in memory session manager"""
-        self.config = config
-        self.deployment_class = deployment_class
-        self.logger = logging.getLogger(__name__)
-
-    def report_exception(
-        self, message: str, http_status_code: int
-    ) -> Tuple[openai.openai_object.OpenAIObject, int]:
-        """report exception"""
-
-        self.logger.warning(msg=f"{message}")
-
-        raise HTTPException(
-            status_code=http_status_code,
-            detail=message,
-        )
 
     def validate_input(self, images: ImagesRequest):
         """validate input"""

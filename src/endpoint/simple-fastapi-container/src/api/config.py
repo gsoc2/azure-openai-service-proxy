@@ -6,8 +6,10 @@ from click import UUID
 from fastapi import HTTPException
 from azure.data.tables.aio import TableClient
 from azure.core.exceptions import AzureError
-from .lru_cache_with_expiry import lru_cache_with_expiry
+
+# pylint: disable=E0402
 from .authorize import AuthorizeResponse
+from .lru_cache_with_expiry import lru_cache_with_expiry
 
 # initiase the random number generator
 random.seed()
@@ -59,7 +61,7 @@ class Config:
             ) as table_client:
                 query_filter = (
                     f"ModelClass eq '{deployment_class}' "
-                    "and PartitionKey eq '{group_id}'"
+                    f"and PartitionKey eq '{group_id}'"
                 )
 
                 # get all columns from the table

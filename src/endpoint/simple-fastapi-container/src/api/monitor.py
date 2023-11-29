@@ -6,9 +6,7 @@ import json
 from uuid import UUID
 from pydantic import BaseModel
 from fastapi import HTTPException
-from azure.core.exceptions import (
-    AzureError,
-)
+from azure.core.exceptions import AzureError
 from azure.storage.queue import QueueServiceClient
 
 logging.basicConfig(level=logging.WARNING)

@@ -4,14 +4,14 @@ import logging
 from typing import Tuple, Any, AsyncGenerator
 
 from pydantic import BaseModel
-from fastapi import HTTPException
 import openai
 import openai.error
 import openai.openai_object
-from .config import Config
-from .openai_async import OpenAIAsyncManager
-from .management import DeploymentClass
+
+# pylint: disable=E0402
 from .authorize import AuthorizeResponse
+from .openai_async import OpenAIAsyncManager
+from .request_base import ModelRequest
 
 OPENAI_CHAT_COMPLETIONS_API_VERSION = "2023-09-01-preview"
 OPENAI_CHAT_COMPLETIONS_EXTENSIONS_API_VERSION = "2023-08-01-preview"
@@ -38,21 +38,8 @@ class ChatCompletionsRequest(BaseModel):
     extensions: bool = False
 
 
-class ChatCompletions:
+class ChatCompletions(ModelRequest):
     """OpenAI Chat Completions Manager"""
-
-    def __init__(self, config: Config, deployment_class: DeploymentClass):
-        """init in memory session manager"""
-        self.config = config
-        self.deployment_class = deployment_class
-        self.logger = logging.getLogger(__name__)
-
-    def __throw_validation_error(self, message: str, status_code: int):
-        """throw validation error"""
-        raise HTTPException(
-            status_code=status_code,
-            detail=message,
-        )
 
     def validate_input(self, chat: ChatCompletionsRequest):
         """validate input"""
@@ -60,32 +47,32 @@ class ChatCompletions:
 
         # check the max_tokens is between 1 and 4096
         if chat.max_tokens is not None and not 1 <= chat.max_tokens <= 4096:
-            self.__throw_validation_error(
+            self.throw_validation_error(
                 "Oops, max_tokens must be between 1 and 4096.", 400
             )
 
         if chat.n is not None and not 1 <= chat.n <= 10:
-            self.__throw_validation_error("Oops, n must be between 1 and 10.", 400)
+            self.throw_validation_error("Oops, n must be between 1 and 10.", 400)
 
         # check the temperature is between 0 and 1
         if chat.temperature is not None and not 0 <= chat.temperature <= 1:
-            self.__throw_validation_error(
+            self.throw_validation_error(
                 "Oops, temperature must be between 0 and 1.", 400
             )
 
         # check the top_p is between 0 and 1
         if chat.top_p is not None and not 0 <= chat.top_p <= 1:
-            self.__throw_validation_error("Oops, top_p must be between 0 and 1.", 400)
+            self.throw_validation_error("Oops, top_p must be between 0 and 1.", 400)
 
         # check the frequency_penalty is between 0 and 1
         if chat.frequency_penalty is not None and not 0 <= chat.frequency_penalty <= 1:
-            self.__throw_validation_error(
+            self.throw_validation_error(
                 "Oops, frequency_penalty must be between 0 and 1.", 400
             )
 
         # check the presence_penalty is between 0 and 1
         if chat.presence_penalty is not None and not 0 <= chat.presence_penalty <= 1:
-            self.__throw_validation_error(
+            self.throw_validation_error(
                 "Oops, presence_penalty must be between 0 and 1.", 400
             )
 
