@@ -1,14 +1,14 @@
 """ chat completion routes """
 
 from typing import AsyncGenerator
-from fastapi import Request, Response, FastAPI
+from fastapi import Request, Response
 from fastapi.responses import StreamingResponse
 import openai.openai_object
 
 
 # pylint: disable=E0402
 from ..authorize import Authorize
-from ..models.chat_completions import (
+from ..model_requests.chat_completions import (
     ChatCompletionsRequest,
     ChatCompletions as RequestMgr,
 )
@@ -23,25 +23,17 @@ class ChatCompletions(RequestManager):
     def __init__(
         self,
         *,
-        app: FastAPI,
         authorize: Authorize,
         config: Config,
-        prefix: str,
-        tags: list[str],
     ):
         super().__init__(
-            app=app,
             authorize=authorize,
             config=config,
-            prefix=prefix,
-            tags=tags,
             deployment_class=DeploymentClass.OPENAI_CHAT.value,
             request_class_mgr=RequestMgr,
         )
 
-        self.__include_router()
-
-    def __include_router(self):
+    def include_router(self):
         """include router"""
 
         # Support for OpenAI SDK 0.28
@@ -107,4 +99,4 @@ class ChatCompletions(RequestManager):
                 response.status_code = status_code
                 return completion
 
-        self.app.include_router(self.router, prefix=self.prefix, tags=self.tags)
+        return self.router

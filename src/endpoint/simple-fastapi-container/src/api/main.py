@@ -54,47 +54,37 @@ management_router(
     prefix="/v1/api",
     tags=["management"],
 )
-completions_router(
-    app=app,
-    authorize=authorize,
-    config=config,
-    prefix="/v1/api",
-    tags=["completions"],
+
+completion_router = completions_router(authorize=authorize, config=config)
+app.include_router(
+    completion_router.include_router(), prefix="/v1/api", tags=["completions"]
 )
-chat_completions_router(
-    app=app,
-    authorize=authorize,
-    config=config,
-    prefix="/v1/api",
-    tags=["chat_completions"],
+
+chat_route = chat_completions_router(authorize=authorize, config=config)
+app.include_router(chat_route.include_router(), prefix="/v1/api", tags=["completions"])
+
+embeddings_route = embeddings_router(authorize=authorize, config=config)
+app.include_router(
+    embeddings_route.include_router(), prefix="/v1/api", tags=["embeddings"]
 )
-embeddings_router(
-    app=app,
-    authorize=authorize,
-    config=config,
-    prefix="/v1/api",
-    tags=["embeddings"],
-)
+
 eventinfo_router(
     app=app,
     authorize=authorize,
     prefix="/v1/api",
     tags=["eventinfo"],
 )
-images_generations_router(
-    app=app,
-    authorize=authorize,
-    config=config,
+
+
+images_generations_route = images_generations_router(authorize=authorize, config=config)
+app.include_router(
+    images_generations_route.include_router(),
     prefix="/v1/api",
-    tags=["images_generations"],
+    tags=["images-generations"],
 )
-images_router(
-    app=app,
-    authorize=authorize,
-    config=config,
-    prefix="/v1/api",
-    tags=["images"],
-)
+
+images_route = images_router(authorize=authorize, config=config)
+app.include_router(images_route.include_router(), prefix="/v1/api", tags=["images"])
 
 
 @app.exception_handler(ResponseValidationError)

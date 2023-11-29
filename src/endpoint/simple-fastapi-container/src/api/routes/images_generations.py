@@ -1,13 +1,13 @@
 """ dalle-3 and beyond """
 
-from fastapi import Request, Response, FastAPI
+from fastapi import Request, Response
 
 
 # pylint: disable=E0402
 from ..authorize import Authorize
 from ..config import Config
 from ..deployment_class import DeploymentClass
-from ..models.image_generation import (
+from ..model_requests.image_generation import (
     ImagesGenerationsRequst,
     ImagesGenerations as RequestMgr,
 )
@@ -19,25 +19,17 @@ class ImagesGenerations(RequestManager):
 
     def __init__(
         self,
-        app: FastAPI,
         authorize: Authorize,
         config: Config,
-        prefix: str,
-        tags: list[str],
     ):
         super().__init__(
-            app=app,
             authorize=authorize,
             config=config,
-            prefix=prefix,
-            tags=tags,
             deployment_class=DeploymentClass.OPENAI_IMAGES_GENERATIONS.value,
             request_class_mgr=RequestMgr,
         )
 
-        self.__include_router()
-
-    def __include_router(self):
+    def include_router(self):
         """include router"""
 
         # Support for Dall-e-2
@@ -110,4 +102,4 @@ class ImagesGenerations(RequestManager):
             response.status_code = status_code
             return completion_response
 
-        self.app.include_router(self.router, prefix=self.prefix, tags=self.tags)
+        return self.router
