@@ -47,6 +47,6 @@ for chunk in response:
         if content:
             print(content, end="", flush=True)
         # delay to simulate real-time chat
-        time.sleep(0.05)
+        time.sleep(0.025)
 
 print()

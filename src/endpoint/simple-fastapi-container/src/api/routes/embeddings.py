@@ -1,14 +1,26 @@
 """ OpenAI Embeddings API route """
 
+from typing import Tuple, Any
+from pydantic import BaseModel
 from fastapi import Request, Response
 import openai.openai_object
 
 # pylint: disable=E0402
 from ..authorize import Authorize
-from ..config import Config
+from ..config import Config, Deployment
 from ..deployment_class import DeploymentClass
-from ..model_requests.embeddings import EmbeddingsRequest, Embeddings as RequestMgr
+from ..openai_async import OpenAIAsyncManager
 from .request_manager import RequestManager
+
+OPENAI_EMBEDDINGS_API_VERSION = "2023-08-01-preview"
+
+
+class EmbeddingsRequest(BaseModel):
+    """OpenAI Chat Request"""
+
+    input: str | list[str]
+    model: str = ""
+    api_version: str = OPENAI_EMBEDDINGS_API_VERSION
 
 
 class Embeddings(RequestManager):
@@ -23,7 +35,6 @@ class Embeddings(RequestManager):
             authorize=authorize,
             config=config,
             deployment_class=DeploymentClass.OPENAI_EMBEDDINGS.value,
-            request_class_mgr=RequestMgr,
         )
 
     def include_router(self):
@@ -44,29 +55,42 @@ class Embeddings(RequestManager):
         # Support for OpenAI SDK 1.0+
         @self.router.post("/embeddings", status_code=200, response_model=None)
         async def oai_embeddings(
-            embeddings: EmbeddingsRequest,
+            model: EmbeddingsRequest,
             request: Request,
             response: Response,
             deployment_id: str = None,
         ) -> openai.openai_object.OpenAIObject:
             """OpenAI chat completion response"""
 
-            # get the api version from the query string
-            if "api-version" in request.query_params:
-                embeddings.api_version = request.query_params["api-version"]
-
-            # exception thrown if not authorized
-            authorize_response = await self.authorize_request(
-                deployment_id=deployment_id, request=request
+            completion, status_code = await self.process_request(
+                deployment_id=deployment_id,
+                request=request,
+                model=model,
+                call_method=self.call_openai,
             )
 
-            (
-                completion,
-                status_code,
-            ) = await self.request_class_mgr.call_openai_embeddings(
-                embeddings, authorize_response
-            )
             response.status_code = status_code
             return completion
 
         return self.router
+
+    async def call_openai(
+        self,
+        model: EmbeddingsRequest,
+        openai_request: dict[str, Any],
+        deployment: Deployment,
+    ) -> Tuple[openai.openai_object.OpenAIObject, int]:
+        """call openai with retry"""
+
+        url = (
+            f"https://{deployment.resource_name}.openai.azure.com/openai/deployments/"
+            f"{deployment.deployment_name}/embeddings"
+            f"?api-version={model.api_version}"
+        )
+
+        async_mgr = OpenAIAsyncManager(deployment)
+        response = await async_mgr.async_openai_post(openai_request, url)
+
+        response["model"] = deployment.friendly_name
+
+        return response, 200

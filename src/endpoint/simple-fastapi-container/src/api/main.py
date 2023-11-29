@@ -19,6 +19,7 @@ from .management import ManagementService
 from .routes.management import Management as management_router
 from .routes.embeddings import Embeddings as embeddings_router
 from .routes.chat_completions import ChatCompletions as chat_completions_router
+from .routes.chat_extensions import ChatExtensions as chat_extensions_router
 from .routes.completions import Completions as completions_router
 from .routes.images import Images as images_router
 from .routes.images_generations import ImagesGenerations as images_generations_router
@@ -61,7 +62,16 @@ app.include_router(
 )
 
 chat_route = chat_completions_router(authorize=authorize, config=config)
-app.include_router(chat_route.include_router(), prefix="/v1/api", tags=["completions"])
+app.include_router(
+    chat_route.include_router(), prefix="/v1/api", tags=["chat-completions"]
+)
+
+chat_extensions_route = chat_extensions_router(authorize=authorize, config=config)
+app.include_router(
+    chat_extensions_route.include_router(),
+    prefix="/v1/api",
+    tags=["chat-completions-extensions"],
+)
 
 embeddings_route = embeddings_router(authorize=authorize, config=config)
 app.include_router(
