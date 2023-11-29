@@ -7,16 +7,16 @@ import httpx
 
 load_dotenv()
 
-ENDPOINT_URL = os.environ.get("ENDPOINT_URL")
-API_KEY = os.environ.get("API_KEY")
+OPENAI_ENDPOINT_URL = os.environ.get("OPENAI_ENDPOINT_URL")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 
 def generate_images(prompt):
     """post the prompt to the OpenAI API and return the response"""
-    url = ENDPOINT_URL + "/images/generations"
+    url = OPENAI_ENDPOINT_URL + "/images/generations"
     headers = {
         "Content-Type": "application/json",
-        "api-key": API_KEY,
+        "api-key": OPENAI_API_KEY,
     }
 
     data = {

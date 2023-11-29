@@ -7,15 +7,15 @@ from openai import AzureOpenAI
 
 load_dotenv()
 
-ENDPOINT_URL = os.environ.get("ENDPOINT_URL")
-API_KEY = os.environ.get("API_KEY")
+OPENAI_ENDPOINT_URL = os.environ.get("OPENAI_ENDPOINT_URL")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 API_VERSION = "2023-09-01-preview"
 MODEL_NAME = "text-davinci-002"
 
 
 client = AzureOpenAI(
-    base_url=ENDPOINT_URL,
-    api_key=API_KEY,
+    base_url=OPENAI_ENDPOINT_URL,
+    api_key=OPENAI_API_KEY,
     api_version=API_VERSION,
 )
 
@@ -37,7 +37,7 @@ response = client.chat.completions.create(
         {"role": "user", "content": "What is the meaning of life!"},
     ],
     stream=True,
-    max_tokens=100,
+    max_tokens=256,
 )
 
 

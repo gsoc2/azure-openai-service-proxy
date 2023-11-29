@@ -8,14 +8,14 @@ from openai import OpenAI
 
 load_dotenv()
 
-ENDPOINT_URL = os.environ.get("ENDPOINT_URL")
-API_KEY = os.environ.get("API_KEY")
+OPENAI_ENDPOINT_URL = os.environ.get("OPENAI_ENDPOINT_URL")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 API_VERSION = os.environ.get("API_VERSION")
 
 
 client = OpenAI(
-    base_url=ENDPOINT_URL,
-    api_key=API_KEY,
+    base_url=OPENAI_ENDPOINT_URL,
+    api_key=OPENAI_API_KEY,
 )
 
 messages = [
@@ -43,7 +43,10 @@ functions = [
                 "format": {
                     "type": "string",
                     "enum": ["celsius", "fahrenheit"],
-                    "description": "The temperature unit to use. Infer this from the users location.",
+                    "description": (
+                        "The temperature unit to use. "
+                        "Infer this from the users location."
+                    ),
                 },
             },
             "required": ["location", "format"],
@@ -62,7 +65,10 @@ functions = [
                 "format": {
                     "type": "string",
                     "enum": ["celsius", "fahrenheit"],
-                    "description": "The temperature unit to use. Infer this from the users location.",
+                    "description": (
+                        "The temperature unit to use. "
+                        "Infer this from the users location."
+                    ),
                 },
                 "num_days": {
                     "type": "integer",

@@ -12,8 +12,8 @@ from openai import AzureOpenAI
 
 load_dotenv()
 
-ENDPOINT_URL = os.environ.get("ENDPOINT_URL")
-API_KEY = os.environ.get("API_KEY")
+OPENAI_ENDPOINT_URL = os.environ.get("OPENAI_ENDPOINT_URL")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 AZURE_AI_SEARCH_ENDPOINT = os.environ.get("AZURE_AI_SEARCH_ENDPOINT")
 AZURE_AI_SEARCH_KEY = os.environ.get("AZURE_AI_SEARCH_KEY")
 AZURE_AI_SEARCH_INDEX_NAME = os.environ.get("AZURE_AI_SEARCH_INDEX_NAME")
@@ -23,8 +23,8 @@ MODEL_NAME = "gpt-35-turbo"
 
 
 client = AzureOpenAI(
-    base_url=f"{ENDPOINT_URL}/openai/deployments/deployment/extensions",
-    api_key=API_KEY,
+    base_url=f"{OPENAI_ENDPOINT_URL}/openai/deployments/deployment/extensions",
+    api_key=OPENAI_API_KEY,
     api_version=API_VERSION,
 )
 
@@ -56,7 +56,7 @@ response = client.chat.completions.create(
     messages=messages,
     extra_body=body,
     stream=True,
-    max_tokens=100,
+    max_tokens=256,
 )
 
 # turn off print buffering

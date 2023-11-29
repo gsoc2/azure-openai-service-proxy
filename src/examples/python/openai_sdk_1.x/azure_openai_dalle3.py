@@ -7,12 +7,12 @@ from openai import AzureOpenAI
 
 load_dotenv()
 
-ENDPOINT_URL = os.environ.get("ENDPOINT_URL")
-API_KEY = os.environ.get("API_KEY")
+OPENAI_ENDPOINT_URL = os.environ.get("OPENAI_ENDPOINT_URL")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 client = AzureOpenAI(
-    azure_endpoint=ENDPOINT_URL,
-    api_key=API_KEY,
+    azure_endpoint=OPENAI_ENDPOINT_URL,
+    api_key=OPENAI_API_KEY,
     api_version="2023-12-01-preview",
 )
 

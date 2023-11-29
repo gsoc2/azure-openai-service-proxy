@@ -7,12 +7,12 @@ from openai import OpenAI
 
 load_dotenv()
 
-ENDPOINT_URL = os.environ.get("ENDPOINT_URL")
-API_KEY = os.environ.get("API_KEY")
+OPENAI_ENDPOINT_URL = os.environ.get("OPENAI_ENDPOINT_URL")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 client = OpenAI(
-    base_url=ENDPOINT_URL,
-    api_key=API_KEY,
+    base_url=OPENAI_ENDPOINT_URL,
+    api_key=OPENAI_API_KEY,
 )
 
 print("Generating images...")
