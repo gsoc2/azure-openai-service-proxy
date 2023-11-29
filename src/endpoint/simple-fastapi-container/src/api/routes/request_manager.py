@@ -5,8 +5,8 @@ from fastapi import APIRouter, FastAPI, Request, HTTPException
 # pylint: disable=E0402
 from ..authorize import Authorize, AuthorizeResponse
 from ..rate_limit import RateLimit
-from ..management import DeploymentClass
-from ..configuration import OpenAIConfig
+from ..deployment_class import DeploymentClass
+from ..config import Config
 
 
 class RequestManager:
@@ -17,7 +17,7 @@ class RequestManager:
         *,
         app: FastAPI,
         authorize: Authorize,
-        connection_string: str,
+        config: Config,
         prefix: str,
         tags: list[str],
         deployment_class: DeploymentClass,
@@ -29,12 +29,7 @@ class RequestManager:
         self.tags = tags
         self.deployment_class = deployment_class
 
-        openai_config = OpenAIConfig(
-            connection_string=connection_string,
-            model_class=deployment_class,
-        )
-
-        self.request_class_mgr = request_class_mgr(openai_config)
+        self.request_class_mgr = request_class_mgr(config, deployment_class)
 
         self.router = APIRouter()
         self.rate_limit = RateLimit()

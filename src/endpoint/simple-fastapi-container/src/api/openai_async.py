@@ -10,9 +10,8 @@ import httpx
 import openai
 import openai.error
 import openai.openai_object
+from .config import Deployment
 
-
-from .configuration import Deployment
 
 HTTPX_TIMEOUT_SECONDS = 60
 HTTPX_STREAMING_TIMEOUT_SECONDS = 10

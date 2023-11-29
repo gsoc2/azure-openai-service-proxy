@@ -13,8 +13,8 @@ from ..chat_completions import (
     ChatCompletions as RequestMgr,
 )
 from ..authorize import Authorize
-
-from ..management import DeploymentClass
+from ..config import Config
+from ..deployment_class import DeploymentClass
 
 
 class ChatCompletions(RequestManager):
@@ -25,14 +25,14 @@ class ChatCompletions(RequestManager):
         *,
         app: FastAPI,
         authorize: Authorize,
-        connection_string: str,
+        config: Config,
         prefix: str,
         tags: list[str],
     ):
         super().__init__(
             app=app,
             authorize=authorize,
-            connection_string=connection_string,
+            config=config,
             prefix=prefix,
             tags=tags,
             deployment_class=DeploymentClass.OPENAI_CHAT.value,
@@ -96,7 +96,10 @@ class ChatCompletions(RequestManager):
             (
                 completion,
                 status_code,
-            ) = await self.request_class_mgr.call_openai_chat_completion(chat)
+            ) = await self.request_class_mgr.call_openai_chat_completion(
+                chat,
+                authorize_response,
+            )
 
             if isinstance(completion, AsyncGenerator):
                 return StreamingResponse(completion)

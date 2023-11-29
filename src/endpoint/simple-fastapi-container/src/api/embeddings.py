@@ -8,7 +8,9 @@ import openai.openai_object
 from pydantic import BaseModel
 
 from .openai_async import OpenAIAsyncManager
-from .configuration import OpenAIConfig
+from .config import Config
+from .management import DeploymentClass
+from .authorize import AuthorizeResponse
 
 OPENAI_EMBEDDINGS_API_VERSION = "2023-08-01-preview"
 
@@ -26,18 +28,21 @@ class EmbeddingsRequest(BaseModel):
 class Embeddings:
     """OpenAI Embeddings Manager"""
 
-    def __init__(self, openai_config: OpenAIConfig):
+    def __init__(self, config: Config, deployment_class: DeploymentClass):
         """init in memory session manager"""
 
-        self.openai_config = openai_config
+        self.config = config
+        self.deployment_class = deployment_class
         self.logger = logging.getLogger(__name__)
 
     async def call_openai_embeddings(
-        self, embedding: EmbeddingsRequest
+        self,
+        embedding: EmbeddingsRequest,
+        authorize_response: AuthorizeResponse,
     ) -> Tuple[openai.openai_object.OpenAIObject, int]:
         """call openai with retry"""
 
-        deployment = await self.openai_config.get_deployment()
+        deployment = await self.config.get_deployment(authorize_response)
 
         openai_request = {
             "input": embedding.input,

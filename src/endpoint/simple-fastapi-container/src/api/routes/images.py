@@ -6,7 +6,8 @@ from fastapi import Request, Response, FastAPI
 from .request_manager import RequestManager
 from ..images import ImagesRequest, Images as RequestMgr
 from ..authorize import Authorize
-from ..management import DeploymentClass
+from ..deployment_class import DeploymentClass
+from ..config import Config
 
 
 class Images(RequestManager):
@@ -16,14 +17,14 @@ class Images(RequestManager):
         self,
         app: FastAPI,
         authorize: Authorize,
-        connection_string: str,
+        config: Config,
         prefix: str,
         tags: list[str],
     ):
         super().__init__(
             app=app,
             authorize=authorize,
-            connection_string=connection_string,
+            config=config,
             prefix=prefix,
             tags=tags,
             deployment_class=DeploymentClass.OPENAI_IMAGES.value,
@@ -61,13 +62,15 @@ class Images(RequestManager):
                 images_request.api_version = request.query_params["api-version"]
 
             # exception thrown if not authorized
-            await self.authorize_request(deployment_id=deployment_id, request=request)
+            authorize_response = await self.authorize_request(
+                deployment_id=deployment_id, request=request
+            )
 
             (
                 completion_response,
                 status_code,
             ) = await self.request_class_mgr.call_openai_images_generations(
-                images_request
+                images_request, authorize_response
             )
             response.status_code = status_code
             return completion_response

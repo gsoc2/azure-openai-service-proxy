@@ -45,11 +45,11 @@ class OpenAIConfig:
         self,
         *,
         connection_string: str,
-        model_class: str,
+        deployment_class: str,
     ):
         """init in memory config manager"""
         self.connection_string = connection_string
-        self.model_class = model_class
+        self.deployment_class = deployment_class
 
         self.round_robin = 0
         self.config = None
@@ -66,7 +66,7 @@ class OpenAIConfig:
                 config = []
 
                 query_filter = (
-                    f"PartitionKey eq '{self.model_class}' and Active eq true"
+                    f"PartitionKey eq '{self.deployment_class}' and Active eq true"
                 )
                 # get all columns from the table
                 queried_entities = table_client.query_entities(

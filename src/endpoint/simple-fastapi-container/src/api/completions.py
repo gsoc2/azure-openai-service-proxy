@@ -8,8 +8,10 @@ import openai
 import openai.error
 import openai.openai_object
 from fastapi import HTTPException
-from .configuration import OpenAIConfig
 from .openai_async import OpenAIAsyncManager
+from .config import Config
+from .management import DeploymentClass
+from .authorize import AuthorizeResponse
 
 OPENAI_COMPLETIONS_API_VERSION = "2023-09-01-preview"
 
@@ -32,9 +34,10 @@ class CompletionsRequest(BaseModel):
 class Completions:
     """OpenAI Completions Manager"""
 
-    def __init__(self, openai_config: OpenAIConfig):
+    def __init__(self, config: Config, deployment_class: DeploymentClass):
         """init in memory session manager"""
-        self.openai_config = openai_config
+        self.config = config
+        self.deployment_class = deployment_class
         self.logger = logging.getLogger(__name__)
 
     def __report_exception(
@@ -90,13 +93,15 @@ class Completions:
             )
 
     async def call_openai_completion(
-        self, cr: CompletionsRequest
+        self,
+        cr: CompletionsRequest,
+        authorize_response: AuthorizeResponse,
     ) -> Tuple[openai.openai_object.OpenAIObject, int]:
         """call openai with retry"""
 
         self.__validate_input(cr)
 
-        deployment = await self.openai_config.get_deployment()
+        deployment = await self.config.get_deployment(authorize_response)
 
         openai_request = {
             "prompt": cr.prompt,

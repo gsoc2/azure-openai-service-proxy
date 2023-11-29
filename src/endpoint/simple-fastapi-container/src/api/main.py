@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 from .authorize import Authorize
+from .config import Config
 
 
 from .management import (
@@ -47,6 +48,7 @@ app = FastAPI(
 
 authorize = Authorize(connection_string=storage_connection_string)
 management_service = ManagementService(storage_connection_string)
+config = Config(connection_string=storage_connection_string)
 
 
 management_router(
@@ -59,36 +61,41 @@ management_router(
 completions_router(
     app=app,
     authorize=authorize,
-    connection_string=storage_connection_string,
+    config=config,
     prefix="/v1/api",
     tags=["completions"],
 )
 chat_completions_router(
     app=app,
     authorize=authorize,
-    connection_string=storage_connection_string,
+    config=config,
     prefix="/v1/api",
     tags=["chat_completions"],
 )
 embeddings_router(
     app=app,
     authorize=authorize,
-    connection_string=storage_connection_string,
+    config=config,
     prefix="/v1/api",
     tags=["embeddings"],
 )
-eventinfo_router(app=app, authorize=authorize, prefix="/v1/api", tags=["eventinfo"])
+eventinfo_router(
+    app=app,
+    authorize=authorize,
+    prefix="/v1/api",
+    tags=["eventinfo"],
+)
 images_generations_router(
     app=app,
     authorize=authorize,
-    connection_string=storage_connection_string,
+    config=config,
     prefix="/v1/api",
     tags=["images_generations"],
 )
 images_router(
     app=app,
     authorize=authorize,
-    connection_string=storage_connection_string,
+    config=config,
     prefix="/v1/api",
     tags=["images"],
 )
@@ -118,27 +125,27 @@ async def startup_event():
 
     # openai_config_chat_completions = OpenAIConfig(
     #     connection_string=storage_connection_string,
-    #     model_class=DeploymentClass.OPENAI_CHAT.value,
+    #     deployment_class=DeploymentClass.OPENAI_CHAT.value,
     # )
 
     # openai_config_completions = OpenAIConfig(
     #     connection_string=storage_connection_string,
-    #     model_class=DeploymentClass.OPENAI_COMPLETIONS.value,
+    #     deployment_class=DeploymentClass.OPENAI_COMPLETIONS.value,
     # )
 
     # openai_config_embeddings = OpenAIConfig(
     #     connection_string=storage_connection_string,
-    #     model_class=DeploymentClass.OPENAI_EMBEDDINGS.value,
+    #     deployment_class=DeploymentClass.OPENAI_EMBEDDINGS.value,
     # )
 
     # openai_config_images = OpenAIConfig(
     #     connection_string=storage_connection_string,
-    #     model_class=DeploymentClass.OPENAI_IMAGES.value,
+    #     deployment_class=DeploymentClass.OPENAI_IMAGES.value,
     # )
 
     # openai_config_images_generations = OpenAIConfig(
     #     connection_string=storage_connection_string,
-    #     model_class=DeploymentClass.OPENAI_IMAGES_GENERATIONS.value,
+    #     deployment_class=DeploymentClass.OPENAI_IMAGES_GENERATIONS.value,
     # )
 
     # app.state.chat_completions_mgr = ChatCompletions(

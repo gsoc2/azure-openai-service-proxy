@@ -8,7 +8,8 @@ from .request_manager import RequestManager
 from ..embeddings import EmbeddingsRequest, Embeddings as RequestMgr
 
 from ..authorize import Authorize
-from ..management import DeploymentClass
+from ..deployment_class import DeploymentClass
+from ..config import Config
 
 
 class Embeddings(RequestManager):
@@ -17,15 +18,15 @@ class Embeddings(RequestManager):
     def __init__(
         self,
         app: FastAPI,
-        connection_string: str,
+        authorize: Authorize,
+        config: Config,
         prefix: str,
         tags: list[str],
-        authorize: Authorize,
     ):
         super().__init__(
             app=app,
             authorize=authorize,
-            connection_string=connection_string,
+            config=config,
             prefix=prefix,
             tags=tags,
             deployment_class=DeploymentClass.OPENAI_EMBEDDINGS.value,

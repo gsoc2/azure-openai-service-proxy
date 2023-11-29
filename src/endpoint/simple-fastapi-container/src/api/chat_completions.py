@@ -8,9 +8,10 @@ from fastapi import HTTPException
 import openai
 import openai.error
 import openai.openai_object
-
-from .configuration import OpenAIConfig
+from .config import Config
 from .openai_async import OpenAIAsyncManager
+from .management import DeploymentClass
+from .authorize import AuthorizeResponse
 
 OPENAI_CHAT_COMPLETIONS_API_VERSION = "2023-09-01-preview"
 OPENAI_CHAT_COMPLETIONS_EXTENSIONS_API_VERSION = "2023-08-01-preview"
@@ -40,9 +41,10 @@ class ChatCompletionsRequest(BaseModel):
 class ChatCompletions:
     """OpenAI Chat Completions Manager"""
 
-    def __init__(self, openai_config: OpenAIConfig):
+    def __init__(self, config: Config, deployment_class: DeploymentClass):
         """init in memory session manager"""
-        self.openai_config = openai_config
+        self.config = config
+        self.deployment_class = deployment_class
         self.logger = logging.getLogger(__name__)
 
     def __throw_validation_error(self, message: str, status_code: int):
@@ -90,12 +92,12 @@ class ChatCompletions:
     async def call_openai_chat_completion(
         self,
         chat: ChatCompletionsRequest,
+        authorize_response: AuthorizeResponse,
     ) -> Tuple[openai.openai_object.OpenAIObject, int] | AsyncGenerator:
         """call openai with retry"""
 
         self.validate_input(chat)
-
-        deployment = await self.openai_config.get_deployment()
+        deployment = await self.config.get_deployment(authorize_response)
 
         # if dataSources are provided, use the extensions API
         if chat.extensions:

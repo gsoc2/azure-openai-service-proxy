@@ -8,8 +8,10 @@ import openai
 from pydantic import BaseModel
 from fastapi import HTTPException, Request, Response
 
-from .configuration import Deployment, OpenAIConfig
 from .openai_async import OpenAIAsyncManager
+from .config import Config, Deployment
+from .management import DeploymentClass
+from .authorize import AuthorizeResponse
 
 OPENAI_IMAGES_GENERATIONS_API_VERSION = "2023-06-01-preview"
 
@@ -49,9 +51,10 @@ class ImagesGenerationsRequst(BaseModel):
 class ImagesGenerations:
     """OpenAI Images Generations Manager"""
 
-    def __init__(self, openai_config: OpenAIConfig):
+    def __init__(self, config: Config, deployment_class: DeploymentClass):
         """init in memory session manager"""
-        self.openai_config = openai_config
+        self.config = config
+        self.deployment_class = deployment_class
         self.logger = logging.getLogger(__name__)
 
     def report_exception(
@@ -96,13 +99,17 @@ class ImagesGenerations:
             )
 
     async def call_openai_images_generations(
-        self, images: ImagesGenerationsRequst, request: Request, response: Response
+        self,
+        images: ImagesGenerationsRequst,
+        request: Request,
+        response: Response,
+        authorize_response: AuthorizeResponse,
     ) -> Tuple[Deployment, openai.openai_object.OpenAIObject, int]:
         """call openai with retry"""
 
         self.validate_input(images)
 
-        deployment = await self.openai_config.get_deployment()
+        deployment = await self.config.get_deployment(authorize_response)
 
         openai_request = {
             "prompt": images.prompt,
@@ -144,12 +151,13 @@ class ImagesGenerations:
         self,
         friendly_name: str,
         image_id: str,
+        authorize_response: AuthorizeResponse,
         api_version: str = OPENAI_IMAGES_GENERATIONS_API_VERSION,
     ):
         """call openai with retry"""
 
-        deployment = await self.openai_config.get_deployment_by_friendly_name(
-            friendly_name
+        deployment = await self.config.get_deployment_by_friendly_name(
+            friendly_name, authorize_response
         )
 
         if deployment is None:
