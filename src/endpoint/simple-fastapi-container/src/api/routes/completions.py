@@ -5,7 +5,7 @@ import openai.openai_object
 
 # pylint: disable=E0402
 from ..authorize import Authorize
-from ..completions import CompletionsRequest, Completions as RequestMgr
+from ..models.completions import CompletionsRequest, Completions as RequestMgr
 from ..config import Config
 from ..deployment_class import DeploymentClass
 from .request_manager import RequestManager

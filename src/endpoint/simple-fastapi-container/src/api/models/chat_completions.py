@@ -9,8 +9,8 @@ import openai.error
 import openai.openai_object
 
 # pylint: disable=E0402
-from .authorize import AuthorizeResponse
-from .openai_async import OpenAIAsyncManager
+from ..authorize import AuthorizeResponse
+from ..openai_async import OpenAIAsyncManager
 from .request_base import ModelRequest
 
 OPENAI_CHAT_COMPLETIONS_API_VERSION = "2023-09-01-preview"

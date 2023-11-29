@@ -8,8 +8,8 @@ import openai.openai_object
 from pydantic import BaseModel
 
 # pylint: disable=E0402
-from .authorize import AuthorizeResponse
-from .openai_async import OpenAIAsyncManager
+from ..authorize import AuthorizeResponse
+from ..openai_async import OpenAIAsyncManager
 from .request_base import ModelRequest
 
 OPENAI_EMBEDDINGS_API_VERSION = "2023-08-01-preview"

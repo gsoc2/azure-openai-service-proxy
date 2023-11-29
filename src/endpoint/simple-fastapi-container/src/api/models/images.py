@@ -7,8 +7,8 @@ import openai
 from pydantic import BaseModel
 
 # pylint: disable=E0402
-from .authorize import AuthorizeResponse
-from .openai_async import OpenAIAsyncManager
+from ..authorize import AuthorizeResponse
+from ..openai_async import OpenAIAsyncManager
 from .request_base import ModelRequest
 
 OPENAI_IMAGES_GENERATIONS_API_VERSION = "2023-12-01-preview"

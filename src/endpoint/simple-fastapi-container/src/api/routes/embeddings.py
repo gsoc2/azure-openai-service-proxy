@@ -7,7 +7,7 @@ import openai.openai_object
 from ..authorize import Authorize
 from ..config import Config
 from ..deployment_class import DeploymentClass
-from ..embeddings import EmbeddingsRequest, Embeddings as RequestMgr
+from ..models.embeddings import EmbeddingsRequest, Embeddings as RequestMgr
 from .request_manager import RequestManager
 
 

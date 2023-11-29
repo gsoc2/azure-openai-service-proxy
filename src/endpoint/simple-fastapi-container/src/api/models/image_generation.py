@@ -9,9 +9,9 @@ from pydantic import BaseModel
 from fastapi import Request, Response
 
 # pylint: disable=E0402
-from .authorize import AuthorizeResponse
-from .config import Deployment
-from .openai_async import OpenAIAsyncManager
+from ..authorize import AuthorizeResponse
+from ..config import Deployment
+from ..openai_async import OpenAIAsyncManager
 from .request_base import ModelRequest
 
 OPENAI_IMAGES_GENERATIONS_API_VERSION = "2023-06-01-preview"

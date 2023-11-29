@@ -6,7 +6,7 @@ from fastapi import Request, Response, FastAPI
 from ..authorize import Authorize
 from ..config import Config
 from ..deployment_class import DeploymentClass
-from ..images import ImagesRequest, Images as RequestMgr
+from ..models.images import ImagesRequest, Images as RequestMgr
 from .request_manager import RequestManager
 
 

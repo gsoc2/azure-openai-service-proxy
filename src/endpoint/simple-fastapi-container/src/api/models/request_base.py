@@ -6,10 +6,8 @@ from fastapi import HTTPException
 import openai.openai_object
 
 # pylint: disable=E0402
-from .config import Config
-from .management import DeploymentClass
-
-# pylint: disable=E0402
+from ..config import Config
+from ..management import DeploymentClass
 
 
 class ModelRequest:
