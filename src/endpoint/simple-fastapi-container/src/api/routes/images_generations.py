@@ -114,8 +114,12 @@ class ImagesGenerations(RequestManager):
             # No deployment_is passed for images generation so set to dall-e
             deployment_id = "dall-e"
 
-            if "api-version" in request.query_params:
-                api_version = request.query_params["api-version"]
+            # if "api-version" in request.query_params:
+            #     api_version = request.query_params["api-version"]
+
+            # Note, the .NET SDK tried to use api-version 2023-09-01-preview
+            # but it is not supported
+            api_version = OPENAI_IMAGES_GENERATIONS_API_VERSION
 
             authorize_response = await self.authorize_request(
                 deployment_id=deployment_id, request=request
@@ -146,6 +150,10 @@ class ImagesGenerations(RequestManager):
 
         deployment = await self.config.get_deployment(authorize_response)
 
+        # Note, the .NET SDK tried to use api-version 2023-09-01-preview
+        # but it is not supported
+        api_version = OPENAI_IMAGES_GENERATIONS_API_VERSION
+
         openai_request = {
             "prompt": images.prompt,
             "n": images.n,
@@ -156,7 +164,7 @@ class ImagesGenerations(RequestManager):
         url = (
             f"https://{deployment.resource_name}.openai.azure.com"
             "/openai/images/generations:submit"
-            f"?api-version={images.api_version}"
+            f"?api-version={api_version}"
         )
 
         async_mgr = OpenAIAsyncManager(deployment)
