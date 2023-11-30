@@ -24,7 +24,7 @@ static async Task GenerateWithDalle2(string key, string endpoint)
 
     var response = await client.GetImageGenerationsAsync(new()
     {
-        Prompt = "cute picture of an cat",
+        Prompt = "cute picture of a cat",
         ImageCount = 1,
     });
 
@@ -49,7 +49,7 @@ static async Task GenerateWithDalle3(string key, string endpoint)
 
     request.Headers.Add("api-key", key);
 
-    var jsonObject = new { prompt = "cute picture of an cat", n = 1 };
+    var jsonObject = new { prompt = "cute picture of a cat", n = 1 };
     var json = System.Text.Json.JsonSerializer.Serialize(jsonObject);
     request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
