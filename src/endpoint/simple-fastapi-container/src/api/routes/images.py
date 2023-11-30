@@ -98,9 +98,8 @@ class Images(RequestManager):
                 deployment_id=deployment_id,
                 request=request,
                 model=model,
-                call_method=self.call_openai,
+                call_method=self.call_openai_images_generations,
                 validate_method=self.__validate_image_request,
-                default_api_version=OPENAI_IMAGES_GENERATIONS_API_VERSION,
             )
 
             response.status_code = status_code
