@@ -13,9 +13,9 @@ Env.Load();
 string? key = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 string? endpoint = Environment.GetEnvironmentVariable("OPENAI_ENDPOINT_URL");
 
-string? searchEndpoint = Environment.GetEnvironmentVariable("YOUR_AZURE_SEARCH_ENDPOINT");
-string? indexName = Environment.GetEnvironmentVariable("YOUR_AZURE_SEARCH_INDEX_NAME");
-string? searchKey = Environment.GetEnvironmentVariable("YOUR_AZURE_SEARCH_KEY");
+string? searchEndpoint = Environment.GetEnvironmentVariable("AZURE_SEARCH_ENDPOINT");
+string? indexName = Environment.GetEnvironmentVariable("AZURE_SEARCH_INDEX_NAME");
+string? searchKey = Environment.GetEnvironmentVariable("AZURE_SEARCH_KEY");
 
 if (key == null || endpoint == null || searchEndpoint == null || indexName == null || searchKey == null)
 {
