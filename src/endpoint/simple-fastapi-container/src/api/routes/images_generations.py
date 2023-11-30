@@ -122,8 +122,12 @@ class ImagesGenerations(RequestManager):
             )
 
             (completion_response, status_code,) = await self.call_openai_images_get(
-                friendly_name, image_id, authorize_response, api_version
+                friendly_name,
+                image_id,
+                authorize_response,
+                api_version,
             )
+
             response.status_code = status_code
             return completion_response
 
