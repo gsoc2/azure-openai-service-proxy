@@ -1,4 +1,4 @@
-""" dalle-3 example """
+""" dalle-2 example """
 import os
 from dotenv import load_dotenv
 import openai  # for handling error types
