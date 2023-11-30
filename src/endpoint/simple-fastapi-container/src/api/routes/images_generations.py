@@ -88,12 +88,16 @@ class ImagesGenerations(RequestManager):
             # No deployment_is passed for images generation so set to dall-e
             deployment_id = "dall-e"
 
-            completion, status_code = await self.process_request(
+            authorize_response = await self.authorize.authorize_api_access(
+                headers=request.headers,
                 deployment_id=deployment_id,
-                request=request,
-                model=model,
-                call_method=self.call_openai_images_generations,
+                request_class=self.deployment_class,
             )
+
+            completion, status_code = await self.call_openai_images_generations(
+                model, request, response, authorize_response
+            )
+
             response.status_code = status_code
 
             return completion
@@ -183,7 +187,7 @@ class ImagesGenerations(RequestManager):
     ):
         """call openai with retry"""
 
-        deployment = await self.config.get_deployment_by_friendly_name(
+        deployment = await self.config.get_deployment_by_name(
             friendly_name, authorize_response
         )
 
@@ -203,31 +207,29 @@ class ImagesGenerations(RequestManager):
 
         return dalle_response.json(), dalle_response.status_code
 
-    def __validate_input(self, images: ImagesGenerationsRequst):
+    def validate_input(self, images: ImagesGenerationsRequst):
         """validate input"""
         # do some basic input validation
         if not images.prompt:
-            return self.report_exception("Oops, no prompt.", 400)
+            self.report_exception("Oops, no prompt.", 400)
 
         if len(images.prompt) > 1000:
-            return self.report_exception(
+            self.report_exception(
                 "Oops, prompt is too long. The maximum length is 1000 characters.", 400
             )
 
         # check the image_count is between 1 and 5
         if images.n and not 1 <= images.n <= 5:
-            return self.report_exception(
+            self.report_exception(
                 "Oops, image_count must be between 1 and 5 inclusive.", 400
             )
 
         # check the image_size is between 256x256, 512x512, 1024x1024
         if images.size and images.size not in ImageSize:
-            return self.report_exception(
+            self.report_exception(
                 "Oops, image_size must be 256x256, 512x512, 1024x1024.", 400
             )
 
         # check the response_format is url or base64
         if images.response_format and images.response_format not in ResponseFormat:
-            return self.report_exception(
-                "Oops, response_format must be url or b64_json.", 400
-            )
+            self.report_exception("Oops, response_format must be url or b64_json.", 400)
