@@ -15,13 +15,13 @@ Env.Load();
 string? key = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 string? endpoint = Environment.GetEnvironmentVariable("OPENAI_ENDPOINT_URL");
 
-string? searchEndpoint = Environment.GetEnvironmentVariable("YOUR_AZURE_SEARCH_ENDPOINT");
-string? indexName = Environment.GetEnvironmentVariable("YOUR_AZURE_SEARCH_INDEX_NAME");
-string? searchKey = Environment.GetEnvironmentVariable("YOUR_AZURE_SEARCH_KEY");
+string? searchEndpoint = Environment.GetEnvironmentVariable("AZURE_AI_SEARCH_ENDPOINT");
+string? indexName = Environment.GetEnvironmentVariable("AZURE_AI_SEARCH_INDEX_NAME");
+string? searchKey = Environment.GetEnvironmentVariable("AZURE_AI_SEARCH_KEY");
 
 if (key == null || endpoint == null || searchEndpoint == null || indexName == null || searchKey == null)
 {
-    Console.WriteLine("Please set the OPENAI_API_KEY, OPENAI_ENDPOINT_URL, YOUR_AZURE_SEARCH_ENDPOINT, YOUR_AZURE_SEARCH_INDEX_NAME, and YOUR_AZURE_SEARCH_KEY environment variables.");
+    Console.WriteLine("Please set the OPENAI_API_KEY, OPENAI_ENDPOINT_URL, AZURE_AI_SEARCH_ENDPOINT, AZURE_AI_SEARCH_INDEX_NAME, and AZURE_AI_SEARCH_KEY environment variables.");
     return;
 }
 
@@ -58,6 +58,7 @@ await foreach (StreamingChatCompletionsUpdate chatUpdate in client.GetChatComple
     if (!string.IsNullOrEmpty(chatUpdate.ContentUpdate))
     {
         Console.Write(chatUpdate.ContentUpdate);
+        Console.Out.Flush(); // Force flush to console for streaming output in debug mode
     }
     await Task.Delay(50);
 }
