@@ -32,7 +32,7 @@ class RequestManager:
 
     async def authorize_request(
         self, deployment_id: str, request: Request
-    ) -> (AuthorizeResponse):
+    ) -> AuthorizeResponse:
         """authorize request"""
 
         authorize_response = await self.authorize.authorize_api_access(

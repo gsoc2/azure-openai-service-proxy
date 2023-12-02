@@ -78,11 +78,9 @@ app.include_router(
     embeddings_route.include_router(), prefix="/v1/api", tags=["embeddings"]
 )
 
-eventinfo_router(
-    app=app,
-    authorize=authorize,
-    prefix="/v1/api",
-    tags=["eventinfo"],
+event_info_route = eventinfo_router(authorize=authorize, config=config)
+app.include_router(
+    event_info_route.include_router(), prefix="/v1/api", tags=["eventinfo"]
 )
 
 

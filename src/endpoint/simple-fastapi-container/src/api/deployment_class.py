@@ -12,3 +12,4 @@ class DeploymentClass(Enum):
     OPENAI_EMBEDDINGS = "openai-embeddings"
     OPENAI_IMAGES_GENERATIONS = "openai-images-generations"
     OPENAI_IMAGES = "openai-images"
+    EVENT_INFO = "*"

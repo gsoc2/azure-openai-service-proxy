@@ -29,12 +29,14 @@ class Deployment:
         endpoint_key: str,
         deployment_name: str,
         resource_name: str,
+        model_class: str,
     ):
         """init deployment"""
         self.friendly_name = friendly_name
         self.endpoint_key = endpoint_key
         self.deployment_name = deployment_name
         self.resource_name = resource_name
+        self.model_class = model_class
 
 
 class Config:
@@ -59,10 +61,13 @@ class Config:
             async with TableClient.from_connection_string(
                 conn_str=self.connection_string, table_name=CONFIGURATION_TABLE_NAME
             ) as table_client:
-                query_filter = (
-                    f"ModelClass eq '{deployment_class}' "
-                    f"and PartitionKey eq '{group_id}'"
-                )
+                if deployment_class == "*":
+                    query_filter = f"PartitionKey eq '{group_id}'"
+                else:
+                    query_filter = (
+                        f"ModelClass eq '{deployment_class}' "
+                        f"and PartitionKey eq '{group_id}'"
+                    )
 
                 # get all columns from the table
                 queried_entities = table_client.query_entities(
@@ -78,6 +83,7 @@ class Config:
                         endpoint_key=entity["EndpointKey"].strip(),
                         deployment_name=entity["DeploymentName"].strip(),
                         resource_name=entity["ResourceName"].strip(),
+                        model_class=entity["ModelClass"].strip(),
                     )
 
                     config.append(deployment_item)
@@ -112,13 +118,13 @@ class Config:
 
         if deployment_count == 0:
             self.logging.warning("No active OpenAI model deployments found.")
-            # 503 Service Unavailable
-            # The server cannot handle the request (because it is overloaded or down for
-            # maintenance). Generally, this is a temporary state
+            # 501 The server either does not recognize the request method,
+            # or it lacks the ability to fulfil the request.
+            # Usually this implies future availability (e.g., a new feature of a web-service API).
             # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
             raise HTTPException(
                 detail="No active OpenAI model deployments found.",
-                status_code=503,
+                status_code=501,
             )
         # get a random deployment to balance load
         index = random.randint(0, deployment_count - 1)
@@ -142,11 +148,29 @@ class Config:
                 return deployment
 
         self.logging.warning("No active OpenAI model deployments found.")
-        # 503 Service Unavailable
-        # The server cannot handle the request (because it is overloaded or down for
-        # maintenance). Generally, this is a temporary state
+        # 501 The server either does not recognize the request method,
+        # or it lacks the ability to fulfil the request.
+        # Usually this implies future availability (e.g., a new feature of a web-service API).
+        # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
         # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
         raise HTTPException(
             detail="No active OpenAI model deployments found.",
-            status_code=503,
+            status_code=501,
         )
+
+    async def get_group_models(
+        self, authorize_response: AuthorizeResponse
+    ) -> list[str]:
+        """get model class list from config deployment table"""
+
+        deployments = await self.get_group_deployments(
+            authorize_response.group_id,
+            "*",
+        )
+
+        # get unique model classes from the deployment list
+        model_classes = set()
+        for deployment in deployments:
+            model_classes.add(deployment.model_class)
+
+        return list(model_classes)
