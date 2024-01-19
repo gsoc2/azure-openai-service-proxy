@@ -16,7 +16,7 @@
     "react-syntax-highlighter": "^15.5.0",
     "rehype-external-links": "^3.0.0",
     "remark-gfm": "^4.0.0",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^3.5.1"
   },
   "devDependencies": {
     "@types/dom-speech-recognition": "^0.0.2",
